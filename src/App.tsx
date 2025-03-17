@@ -1,44 +1,41 @@
-import { useCallback, useEffect, useState } from '@lynx-js/react'
+import { useCallback, useState  } from '@lynx-js/react'
 
 import './App.css'
-import arrow from './assets/arrow.png'
-import lynxLogo from './assets/lynx-logo.png'
-import reactLynxLogo from './assets/react-logo.png'
+
+import { DoorOpener } from './pages/DoorOpener.jsx';
+import { Chat } from './pages/Chat.jsx';
 
 export function App() {
-  const [alterLogo, setAlterLogo] = useState(false)
-
-  useEffect(() => {
-    console.info('Hello, ReactLynx')
-  }, [])
-
-  const onTap = useCallback(() => {
-    'background only'
-    setAlterLogo(!alterLogo)
-  }, [alterLogo])
-
+  const [currentRoute, setCurrentRoute] = useState('door')
+  
   return (
-    <view>
-      <view className='Background' />
-      <view className='App'>
-        <view className='Banner'>
-          <view className='Logo' bindtap={onTap}>
-            {alterLogo
-              ? <image src={reactLynxLogo} className='Logo--react' />
-              : <image src={lynxLogo} className='Logo--lynx' />}
-          </view>
-          <text className='Title'>React</text>
-          <text className='Subtitle'>on Lynx</text>
+    <view className='App'>
+      <view className='Content w-full'>
+        {currentRoute === 'door' && <DoorOpener />}
+        {currentRoute === 'chat' && <Chat />}
+
+        <view className='relative'>
+
+            <view className='Footer' style={{ color: '#000' }}>
+              
+              <text 
+                bindtap={() => setCurrentRoute('door')} 
+                style={{ cursor: 'pointer', color: '#000' }}
+              >
+                Door
+              </text>
+
+              <text 
+                bindtap={() => setCurrentRoute('chat')} 
+                style={{ cursor: 'pointer', color: '#000' }}
+              >
+                Chat
+              </text>
+
+            </view>
+
         </view>
-        <view className='Content'>
-          <image src={arrow} className='Arrow' />
-          <text className='Description'>Testing for the first time!</text>
-          <text className='Hint'>
-            Edit<text style={{ fontStyle: 'italic' }}>{' src/App.tsx '}</text>
-            to see updates!
-          </text>
-        </view>
-        <view style={{ flex: 1 }}></view>
+        
       </view>
     </view>
   )
