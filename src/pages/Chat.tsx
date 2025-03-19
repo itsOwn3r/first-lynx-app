@@ -1,25 +1,28 @@
-import { useCallback, useState  } from '@lynx-js/react'
-
+import { useState } from '@lynx-js/react'
 import '../App.css';
-import { useEffect, type FormEvent } from 'react';
+import { useEffect } from 'react';
 
 export function Chat() {
     const [messages, setMessages] = useState([{ sender: "me", message: "Ask AI anything..." }]);
     const [prompt, setPrompt] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    
+const handleInput = (e: { detail: { value: string } }) => {
+    setPrompt(e.detail.value);
+};
 
-  const handleFetch = useCallback(async (e) => {
-    // Prevent default form submission behavior if event exists
-    if (e && e.preventDefault) {
-      e.preventDefault();
-    }
+const handleError = async (msg: string) => {
+    setMessages((oldState) => [...oldState, { sender: "error", message: msg }]);
+}
 
-    try {
-        setIsLoading(true);
-
-        if (prompt === "") {
-            // return;
+  const handleFetch = async () => {
+      try {
+          setIsLoading(true);
+          
+          if (prompt === "") {
+            handleError("Please enter the prompt!");
+            return;
         }
 
         const response = await lynx.fetch("http://192.168.1.108:3001/api/ai", {
@@ -41,71 +44,54 @@ export function Chat() {
     } finally {
         setIsLoading(false);
     }
-  }, [])
+  };
 
 
 useEffect(() => {
     setMessages((oldState) => [...oldState, { sender: "server", message: "Feel free to ask anything..." }]);
+}, [])
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Enter" && prompt.trim()) {
-            handleFetch(e);
-        }
-    }
 
-    const handleChange = (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        const newValue = target.value;
-        setMessages((oldState) => [...oldState, { sender: "server", message: newValue }]);
-
-        setPrompt(newValue);
-        // Don't add message on every change, only when submitting
-    }
-
-    const inputElement = document.getElementById("prompt") as HTMLInputElement;
-    
-    // Add event listeners when component mounts
-    if (typeof window !== 'undefined') {
-        window.addEventListener('keydown', handleKeyDown);
-        inputElement?.addEventListener('input', handleChange); // Changed from 'change' to 'input' for real-time updates
-
-        // Cleanup event listeners when component unmounts
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            inputElement?.removeEventListener('input', handleChange);
-        }
-    }
-}, [handleFetch, prompt]) // Added prompt to dependencies
-
-  return (
-        <view className="Holder white min-h-[100dvh] w-full">
-        <view className='flex justify-around items-center flex-col w-full h-full px-3'>
-            <view className='w-full h-full container flex flex-col justify-center items-center'>
+return (
+        <view scroll-orientation="vertical" className="Holder white min-h-[100vh] w-full relative overflow-scroll">
+        <view className='flex flex-col w-full h-full px-3 pb-32 max-h-80vh overflow-scroll'>
+            <scroll-view scroll-orientation="vertical" className='w-full h-full container flex flex-col justify-start items-center overflow-y-auto'>
                 {Array.isArray(messages) ? messages.map((item, i) => (
                     <view key={i} className={`flex w-full mb-8 ${item.sender === "me" ? "justify-end" : ""}`}>
-                        {item.sender === "server" ? (<text className='whitespace-break-spaces pb-2 border-b text-black'><text>{item.message}</text></text>) : `${item.message}`}
+                        {item.sender === "server" ? (<text className='whitespace-break-spaces pb-2 border-b text-black'><text>{item.message}</text></text>) : (item.sender === "error" ? <text className='whitespace-break-spaces pb-2 text-orange text-center'>{item.message} </text> : <text className='whitespace-break-spaces pb-2 text-black'>{item.message}</text>)}
                     </view>
                 )) : <view className='white'>Nothing to see here!</view>}
-            </view>
-            <view className='w-full h-full flex justify-center items-center'>
-                <view className="max-w-full md:max-w-[70%] lg:max-w-[50%] w-full h-full">
-                    <view onSubmit={handleFetch} className="w-full flex cursor-text flex-col rounded-3xl px-3 py-1">
-                        <input 
-                            placeholder='Ask...'  
-                            value={prompt} 
-                            type="text"
-                            // bindinput={(e) => setPrompt(e.detail.value)}
-                            // onChange={(e) => setPrompt(e.target.value)}
-                            // onChangeCapture={(e) => setPrompt(e.target.value)}
-                            id='prompt'
-                            disabled={isLoading}
-                            className='w-full h-full text-lg min-h-[44px] py-4 px-2 rounded-xl border-2 border-gray-300 text-black outline-none' 
-                        />
-                        <view className='w-full flex justify-center items-center'>
-                            <text bindtap={handleFetch} className='px-6 py-3 bg-green-600 hover:bg-green-400 duration-500 transition-all rounded-xl mt-5 -mb-20 text-xl'>
-                                Send
-                            </text>
-                        </view>
+            </scroll-view>
+        </view>
+        <view className='w-full fixed bottom-0 left-0 bg-white/80 backdrop-blur-sm py-4 px-3'>
+            <view className="max-w-full md:max-w-[70%] lg:max-w-[50%] mx-auto">
+                <view className="w-full flex cursor-text flex-col rounded-3xl px-3 py-1">
+                    <input 
+                        placeholder=''  
+                        value={prompt}
+
+                        // @ts-expect-error bindinput type is not defined but it works and it's in the docs
+                        bindinput={(e) => handleInput(e)}
+                        type="text"
+                        id='prompt'
+                        disabled={isLoading}
+                        className='w-full h-full text-lg min-h-[50px] py-4 px-6 
+                            rounded-2xl border-2 border-gray-300 
+                            text-black outline-none
+                            focus:border-green-500 focus:ring-2 focus:ring-green-200
+                            transition-all duration-300
+                            placeholder:text-gray-400
+                            disabled:bg-gray-100 disabled:cursor-not-allowed
+                            shadow-sm hover:shadow-md' 
+                    />
+                    <view className='w-full flex justify-center items-center'>
+                        <text
+                            bindtap={handleFetch}
+                            className={`px-6 py-3 ${isLoading ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-400'} duration-500 transition-all rounded-xl mt-5 text-xl cursor-pointer`}
+                            aria-label={isLoading ? "Sending message" : "Send message"}
+                        >
+                            {isLoading ? "Sending..." : "Send"}
+                        </text>
                     </view>
                 </view>
             </view>

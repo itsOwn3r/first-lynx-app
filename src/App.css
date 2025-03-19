@@ -441,3 +441,126 @@ input:checked + .slider:before {
 .text-black {
   color: #000;
 }
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.absolute {
+  position: absolute;
+}
+.bottom-0 {
+  bottom: 0px;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.max-h-80vh {
+  max-height: 70vh;
+}
+
+/* Adding missing Tailwind-like utilities */
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.min-h-\[50px\] {
+  min-height: 50px;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
+.border-2 {
+  border-width: 2px;
+}
+
+.border-gray-300 {
+  border-color: #d1d5db;
+}
+
+.text-black {
+  color: #000;
+}
+
+.outline-none {
+  outline: none;
+}
+
+.focus\:border-green-500:focus {
+  border-color: #22c55e;
+}
+
+.focus\:ring-2:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+
+.focus\:ring-green-200:focus {
+  --tw-ring-color: #bbf7d0;
+}
+
+.transition-all {
+  transition-property: all;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.placeholder\:text-gray-400::placeholder {
+  color: #9ca3af;
+}
+
+.disabled\:bg-gray-100:disabled {
+  background-color: #f3f4f6;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+  cursor: not-allowed;
+}
+
+.shadow-sm {
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  box-shadow: var(--tw-shadow);
+}
+
+.hover\:shadow-md:hover {
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: var(--tw-shadow);
+}
+
+.bg-gray-400 {
+  background-color: #9ca3af;
+}
+
+
+.text-orange {
+  color: #ff6448;
+}
+
+.text-center {
+  text-align: center;
+}

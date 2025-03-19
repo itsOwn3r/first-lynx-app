@@ -9,8 +9,8 @@ export function App() {
   const [currentRoute, setCurrentRoute] = useState('door')
   
   return (
-    <view className='App'>
-      <view className='Content w-full'>
+    <view className='App min-h-[100%]'>
+      <view className='Content w-full h-full min-h-[100%]'>
         {currentRoute === 'door' && <DoorOpener />}
         {currentRoute === 'chat' && <Chat />}
 
